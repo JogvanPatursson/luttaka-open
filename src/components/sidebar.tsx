@@ -9,6 +9,7 @@ import {
   Newspaper,
   Ticket,
   Users,
+  List,
 } from "lucide-react"
 
 import { LuttakaLogoAndTitle } from "./luttaka-logo-and-title"
@@ -112,6 +113,13 @@ const Sidebar = () => {
             label: "",
             superuserRequired: true,
             icon: KeyRoundIcon,
+          },
+          {
+            href: "/admin/event-logs",
+            title: "Event Logs",
+            label: "",
+            superuserRequired: true,
+            icon: List,
           },
         ]}
       />

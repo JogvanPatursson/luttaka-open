@@ -1,13 +1,13 @@
 import type { NextRequest } from "next/server"
 
-import { EventDto } from "@/contracts/common"
+import { EventDto, EventMetadataDto, EventMetdata } from "@/contracts/common"
 
 interface Domain {
   flowType: string
   eventType: Record<string, string>
 }
 
-type Transformer = (payload: unknown) => Promise<void>
+type Transformer = (payload: unknown, metadata?: EventMetdata) => Promise<void>
 
 type Transformers<T extends string = string> = Record<T, Transformer>
 
@@ -43,7 +43,8 @@ export default class EventTransformer {
     if (!transformer) {
       throw new Error("No transformer found")
     }
-    return transformer(event.payload)
+    const metadata = EventMetadataDto.parse(event)
+    return transformer(event.payload, metadata)
   }
 
   getEventTypeKey(eventType: string): string | undefined {

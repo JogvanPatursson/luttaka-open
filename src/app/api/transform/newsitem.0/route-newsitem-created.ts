@@ -1,10 +1,18 @@
 import { eq } from "drizzle-orm"
 
-import { NewsitemEventCreatedPayload } from "@/contracts/events/newsitem"
+import {
+  NewsitemEventCreatedPayload,
+  newsitem,
+} from "@/contracts/events/newsitem"
 import { db } from "@/database"
 import { newsitems } from "@/database/schemas"
+import { EventMetadata } from "@/contracts/common"
+import { addEventLog } from "../lib/log-event"
 
-export default async function newsitemCreated(payload: unknown) {
+export default async function newsitemCreated(
+  payload: unknown,
+  metadata: EventMetadata,
+) {
   console.log("Got created newsitem", payload)
   const parsedPayload = NewsitemEventCreatedPayload.parse(payload)
   const exists = await db.query.newsitems.findFirst({
@@ -15,4 +23,6 @@ export default async function newsitemCreated(payload: unknown) {
   }
 
   await db.insert(newsitems).values(parsedPayload)
+
+  addEventLog(metadata.eventType, parsedPayload)
 }
